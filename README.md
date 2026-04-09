@@ -216,3 +216,4 @@ backend/           Python FastAPI
 ## License
 
 MIT License - Use freely for any purpose.
+# FREE-AI
