@@ -1,8 +1,8 @@
-# LocalMind - Privacy-First AI Image Editor
+# LocalMind - AI Image Editor (Local + Cloud)
 
 ## Concept & Vision
 
-A completely offline AI image editing studio that respects user privacy above all else. No data ever leaves the machine. The interface feels like a professional creative tool—dark, focused, powerful—with the simplicity of a consumer app. Think "professional photo editor meets local AI powerhouse."
+An AI image editing studio with flexible deployment options. Choose between **offline mode** (local Stable Diffusion - free, unlimited, private) or **online mode** (cloud AI - faster, higher quality, requires API key). The interface feels like a professional creative tool—dark, focused, powerful—with the simplicity of a consumer app. Think "professional photo editor meets AI powerhouse."
 
 The aesthetic is **dark industrial**: deep blacks, subtle gradients, accent colors that pop without being garish. It should feel like a tool built for serious creative work, not a toy or a generic web app.
 
@@ -327,35 +327,59 @@ Change the active model.
 }
 ```
 
-### Data Flow
+### Data Flow (Offline Mode)
 1. User uploads image → stored in React state as base64
 2. User enters prompt + settings
-3. Generate button clicked → POST to `/api/generate` with image + params
-4. Backend receives request, validates image, sends to Stable Diffusion
+3. Generate button clicked → POST to `/api/sd-api/generate` with image + params
+4. Backend receives request, forwards to local Stable Diffusion
 5. Stable Diffusion returns generated image
 6. Backend returns base64 image to frontend
 7. Frontend displays result, enables download
 
+### Data Flow (Online Mode)
+1. User uploads image + selects cloud provider + enters API key
+2. Backend receives request, forwards to cloud API with user's API key
+3. Cloud AI returns generated image
+4. Backend returns base64 image to frontend
+5. Frontend displays result, enables download
+
 ### Privacy Guarantees
-- No localStorage/sessionStorage usage
-- No cookies
+**Offline Mode:**
 - No network requests except to localhost
+- Images processed in memory, not persisted to disk
+- No localStorage/sessionStorage usage for images
 - No analytics or telemetry
-- No logs of user content
-- Images processed in memory, not persisted to disk (except temp)
+
+**Online Mode:**
+- API keys stored in browser localStorage only
+- API keys sent only to respective cloud provider
+- No intermediate data storage
+- Images sent directly to chosen cloud provider
 
 ## Development Notes
 
 ### Prerequisites
 - Python 3.9+
 - Node.js 18+
-- AUTOMATIC1111 Stable Diffusion WebUI running on port 7860
-- At least 8GB RAM, 6GB VRAM recommended
+- **For Offline Mode:** AUTOMATIC1111 Stable Diffusion WebUI on port 7860
+- **For Online Mode:** API keys from cloud providers
 
 ### Running the App
-1. Start backend: `cd backend && pip install -r requirements.txt && uvicorn main:app --reload --port 8000`
+1. Start backend: `cd backend && source venv/bin/activate && uvicorn main:app --reload --port 8000`
 2. Start frontend: `cd frontend && npm install && npm run dev`
 3. Open http://localhost:5173
 
 ### Environment Variables (Backend)
 - `SD_API_URL`: Stable Diffusion URL (default: http://localhost:7860)
+
+### Cloud Providers (Online Mode)
+| Provider | API Key Format | Capabilities |
+|----------|---------------|--------------|
+| OpenAI DALL-E 3 | `sk-...` | High quality, fast, 1024x1024 |
+| Replicate (SDXL) | `r8_...` | Stable Diffusion XL, img2img |
+| Leonardo.ai | `...` | Creative AI models |
+
+### API Keys
+- Stored locally in browser's localStorage
+- Never sent to any server except the respective cloud provider
+- Entered in Settings panel under "API Keys" section

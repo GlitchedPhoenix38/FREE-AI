@@ -1,13 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from routers import sd_api
+from routers import sd_api, cloud_api
 import os
 
 app = FastAPI(
     title="LocalMind API",
-    description="Privacy-first AI Image Editor API",
-    version="1.0.0"
+    description="AI Image Editor - Local & Cloud Options",
+    version="2.0.0"
 )
 
 app.add_middleware(
@@ -19,6 +19,7 @@ app.add_middleware(
 )
 
 app.include_router(sd_api.router)
+app.include_router(cloud_api.router)
 
 
 @app.get("/")

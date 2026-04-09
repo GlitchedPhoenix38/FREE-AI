@@ -6,6 +6,7 @@ import PromptInput from './components/PromptInput';
 import GenerateButton from './components/GenerateButton';
 import ImagePreview from './components/ImagePreview';
 import SettingsPanel from './components/SettingsPanel';
+import WelcomePopup from './components/WelcomePopup';
 import { AlertCircle, X } from 'lucide-react';
 
 function AppContent() {
@@ -14,6 +15,8 @@ function AppContent() {
 
   return (
     <div className="h-screen flex flex-col bg-bg-primary">
+      <WelcomePopup />
+      
       <Header
         onSettingsClick={() => setSettingsOpen(!settingsOpen)}
         settingsOpen={settingsOpen}
@@ -35,7 +38,7 @@ function AppContent() {
       )}
 
       <main className="flex-1 flex overflow-hidden">
-        <div className="w-80 bg-bg-secondary border-r border-border-subtle p-4 flex flex-col gap-6 overflow-y-auto">
+        <div className="w-80 h-full bg-bg-secondary border-r border-border-subtle p-4 flex flex-col gap-6 overflow-y-auto">
           <section>
             <h2 className="text-sm font-medium text-text-secondary mb-3">Image</h2>
             <UploadZone />
